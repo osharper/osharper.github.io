@@ -15,8 +15,8 @@ const MeCard = () => {
       <img class="w-32 h-32 rounded-full ml-auto mr-4 border-4 border-slate-300" src={photoUrl} alt="Oleg Dolotov" />
       <figcaption class="text-lg mr-auto ml-4 py-4">
         <h1 class="text-3xl">Oleg Dolotov</h1>
-        <h2 class="mt-4 text-2xl">Fullstack web developer with {yearsOfExperience} years of experience</h2>
-        <p class="text-sm">{age} years old, digital nomad, currently living in Thailand</p>
+        <h2 class="mt-4 text-2xl">Cloud/DevOps engineer & AI adoption lead, {yearsOfExperience} years of experience</h2>
+        <p class="text-sm">{age} years old, digital nomad based in Thailand, father, beach volleyball player</p>
       </figcaption>
     </figure>
   );

@@ -1,5 +1,4 @@
 import styles from './App.module.css';
-import FacebookIcon from './svg/FacebookIcon';
 import Telegramicon from './svg/Telegramicon';
 import LinkedinIcon from './svg/linkedin-svgrepo-com.svg'
 import Soundcloudicon from './svg/soundcloudicon';
@@ -21,9 +20,6 @@ const AboutMe = () => {
           <li><a href="https://www.stackoverflow.com/users/1048482/osharper">
             <StackoverflowIcon />
             </a></li>
-          <li><a href="https://www.facebook.com/osharper">
-            <FacebookIcon />
-          </a></li>
           <li><a href="https://t.me/osharper">
             <Telegramicon />
           </a></li>
@@ -40,13 +36,23 @@ const AboutMe = () => {
       <div class={`mb-4 bg-white-600 w-full px-4 py-2 backdrop-blur-sm ${borderClasses}`}>
         <h2 class="text-3xl">About me</h2>
         <p>
-            I have more than a decade of experience in developing web applications using various technologies and frameworks, such as Node.js, React, Angular, .NET, MongoDB and cloud service providers: AWS, GCP and Azure. My last projects were majorly cloud-based B2B web applications with focus on automation, robustness and scalability, but I would love to get involved in some B2C projects with high scalability requirements. My core competencies include full-stack development, data-driven reporting, API integration and development, CI/CD setup and data optimizations. My mission is to create innovative and user-friendly solutions that help people and organizations be more productive and solve real-world problems. I'm not limiting myself to some set of languages (my main ones are C#, JS/TS and Python nowadays) and always keen to learn something new, currently I'm exploring Unity3D, Go, Rust (with Bevy) and RDF/SPARQL.
+            I have more than a decade of experience building web applications and cloud infrastructure — Node.js, React, .NET, MongoDB, and AWS/GCP/Azure. My current focus is cloud infrastructure and DevOps (AWS EKS, Docker/Kubernetes) and, most recently, leading AI adoption across engineering teams — bringing LLM-assisted and agentic coding workflows into day-to-day development. I'm not limited to one stack (my main languages nowadays are C#, JS/TS and Python) and I'm always exploring something new — currently Unity3D, Go, Rust, and self-hosted AI tooling.
         </p>
         <p>
-            For six years, I worked as a Senior Web Application Developer at Showd.me, a rapidly growing employee training and certification platform. I contributed to the transformation of the application into a robust and scalable solution capable of managing a diverse array of tasks, such as data-driven reporting using raw ElasticSearch event data, PDF generation and bundling in AWS Lambda tasks, and interacting with various EMS systems featuring complex APIs. I worked with a dedicated development team and coordinated the server-side, client-side, and storage areas of the project. I also performed code reviews and ensured the quality and performance of the code.
+            For eight years I've worked at Showd.me, a fast-growing employee training and certification platform — starting as a full-stack developer and growing into leading its AI adoption initiative. Along the way I've built data-driven reporting on raw ElasticSearch event data, PDF generation and bundling in AWS Lambda, and integrations with EMS systems with complex APIs, while coordinating server-side, client-side, and storage work across a dedicated team.
         </p>
         <p>
-            I have a strong understanding of the principles of software development, including SOLID, DRY, KISS, and YAGNI. I am experienced in using various design patterns and architectural styles, such as MVC, MVVM, and CQRS. I am also familiar with various development methodologies, such as Agile, Scrum, and Kanban. I am a strong advocate of test-driven development and continuous integration, and I have experience with various testing frameworks, such as Jest, Mocha, and Chai. I am also familiar with various CI/CD tools, such as Jenkins, Travis CI, and GitHub Actions.
+            I have a strong understanding of the principles of software development, including SOLID, DRY, KISS, and YAGNI, and experience with MVC, MVVM, and CQRS, Agile/Scrum/Kanban, and CI/CD (GitHub Actions and others).
+        </p>
+      </div>
+
+      <div class={`mb-4 bg-white-600 w-full px-4 py-2 backdrop-blur-sm ${borderClasses}`}>
+        <h2 class="text-3xl">Outside work</h2>
+        <p>
+          I live as a digital nomad on Ko Pha-ngan, Thailand, with my family. When I'm not at a screen I'm usually on the beach volleyball court, drinking too much tea, or in the greenhouse — I'm slowly building a small home farm and greenhouse automation setup, and would love to hear from anyone doing similar tropical growing or garden-automation projects.
+        </p>
+        <p>
+          I also build things for fun: a gamified, family-friendly task-management system (think GTD meets tabletop RPG), and a Telegram bot that runs signups for my local beach volleyball group with Google Calendar integration and an AI assistant. Both are early-stage and not public yet — if any of this overlaps with what you're building, or you'd like to compare notes, reach out.
         </p>
       </div>
     </div>
