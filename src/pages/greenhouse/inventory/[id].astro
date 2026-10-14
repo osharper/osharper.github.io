@@ -1,0 +1,34 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import Greenhouse from '../../../layouts/Greenhouse.astro';
+import MetaList from '../../../components/greenhouse/MetaList.astro';
+import StatusPill from '../../../components/greenhouse/StatusPill.astro';
+import { excerpt, fmtDate, getInventory, titleOf } from '../../../lib/greenhouse';
+
+export const getStaticPaths = (async () =>
+  (await getInventory()).map((item) => ({ params: { id: item.id }, props: { item } }))) satisfies GetStaticPaths;
+
+const { item } = Astro.props;
+const d = item.data;
+const { Content } = await render(item);
+---
+
+<Greenhouse title={titleOf(item)} kicker={`Inventory · ${d.category}`} description={excerpt(item, 'Notes', 160) || titleOf(item)}>
+  <Fragment slot="header">
+    <p class="mt-2"><StatusPill status={d.status} /></p>
+    <MetaList
+      rows={[
+        ['quantity', d.qty_total],
+        ['brand', d.brand],
+        ['shop', d.shop],
+        ['price', d.unit_price_thb !== undefined ? `฿${d.unit_price_thb.toLocaleString('en')}` : undefined],
+        ['updated', fmtDate(d.updated)],
+      ]}
+    />
+  </Fragment>
+
+  <article class="card prose-site px-5 py-5 sm:px-8">
+    <Content />
+  </article>
+</Greenhouse>

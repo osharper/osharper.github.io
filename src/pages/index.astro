@@ -1,0 +1,193 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Section from '../components/home/Section.astro';
+import Social from '../components/home/Social.astro';
+import { areas } from '../areas';
+import { excerpt, fmtDate, getLog, getPlantings, isActive } from '../lib/greenhouse';
+import photo from '../assets/me.jpg';
+
+// Rebuilt on every push here or to a vault, so build-time values stay fresh.
+const now = new Date();
+const birthdayPassed = now.getMonth() >= 8; // September
+const age = now.getFullYear() - 1986 - (birthdayPassed ? 0 : 1);
+const yearsOfExperience = now.getFullYear() - 2009;
+
+const [log, plantings] = await Promise.all([getLog(), getPlantings()]);
+const areaStatus: Record<string, string> = {
+  greenhouse: log[0]
+    ? `Last logged ${fmtDate(log[0].data.date)} · ${plantings.filter(isActive).length} batches growing. ${excerpt(log[0], 'Summary', 200)}`
+    : '',
+};
+
+const tools = [
+  { group: 'Server side', items: ['Node.js / Express', 'ASP.NET Core', 'Python', 'Go', 'Rust'] },
+  { group: 'Client side', items: ['React', 'Angular', 'Solid.js', 'Vue', 'Unity3D'] },
+  { group: 'Databases', items: ['MongoDB', 'PostgreSQL', 'MySQL', 'SQLite', 'Redis'] },
+  { group: 'Infrastructure', items: ['CI/CD', 'AWS', 'GCP', 'Docker', 'Kubernetes', 'Serverless'] },
+];
+
+const experiments = [
+  {
+    href: 'https://osharper.github.io/solid-tsparticles/',
+    title: 'Solid.js + tsParticles',
+    note: 'where the particle background started',
+  },
+  {
+    href: 'https://t.me/addstickers/magicreatures',
+    title: 'Magic creatures',
+    note: 'a Telegram sticker set my son drew',
+  },
+  {
+    href: 'https://github.com/osharper/osharper.github.io',
+    title: 'This website',
+    note: 'Astro, tsParticles, and an Obsidian vault rendered into a site section on every push',
+  },
+];
+---
+
+<Base
+  title="Oleg Dolotov — Cloud/DevOps engineer & AI adoption lead"
+  description="Oleg Dolotov: cloud/DevOps engineer and AI adoption lead, digital nomad on Koh Phangan, beach volleyball player and greenhouse tinkerer."
+>
+  <div class="flex flex-col gap-4 py-6">
+    <figure class="card flex flex-col items-center gap-5 px-5 py-6 text-center sm:flex-row sm:gap-8 sm:px-8 sm:text-left">
+      <Image
+        src={photo}
+        alt="Oleg Dolotov"
+        width={256}
+        height={256}
+        class="size-32 shrink-0 rounded-full border-4 border-slate-300 object-cover dark:border-slate-600"
+        loading="eager"
+      />
+      <figcaption>
+        <p class="font-mono text-xs text-slate-500 dark:text-slate-400">&gt; Hello world!</p>
+        <h1 class="mt-1 text-3xl font-semibold tracking-tight sm:text-4xl">Oleg Dolotov</h1>
+        <p class="mt-2 text-lg text-slate-700 sm:text-xl dark:text-slate-300">
+          Cloud/DevOps engineer & AI adoption lead, {yearsOfExperience} years of experience
+        </p>
+        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+          {age} years old, digital nomad based in Thailand, father, beach volleyball player
+        </p>
+      </figcaption>
+    </figure>
+
+    <div class="card flex flex-col items-center gap-4 px-5 py-4 sm:flex-row sm:justify-between">
+      <Social />
+      <a
+        href="https://docs.google.com/document/d/1mVbuZVcYO2aDbF2FcHohd8dmozP17fEKvVGJ9ykWtaA/export?format=pdf"
+        class="shrink-0 rounded bg-accent px-4 py-2 font-semibold text-white hover:bg-accent-strong dark:text-slate-950"
+      >
+        Download CV
+      </a>
+    </div>
+
+    <Section title="About me" id="about">
+      <p>
+        I have more than a decade of experience building web applications and cloud infrastructure — Node.js, React,
+        .NET, MongoDB, and AWS/GCP/Azure. My current focus is cloud infrastructure and DevOps (AWS EKS,
+        Docker/Kubernetes) and, most recently, leading AI adoption across engineering teams — bringing LLM-assisted and
+        agentic coding workflows into day-to-day development. I'm not limited to one stack (my main languages nowadays
+        are C#, JS/TS and Python) and I'm always exploring something new — currently Unity3D, Go, Rust, and self-hosted
+        AI tooling.
+      </p>
+      <p>
+        For eight years I've worked at Showd.me, a fast-growing employee training and certification platform —
+        starting as a full-stack developer and growing into leading its AI adoption initiative. Along the way I've built
+        data-driven reporting on raw ElasticSearch event data, PDF generation and bundling in AWS Lambda, and
+        integrations with EMS systems with complex APIs, while coordinating server-side, client-side, and storage work
+        across a dedicated team.
+      </p>
+      <p>
+        I have a strong understanding of the principles of software development, including SOLID, DRY, KISS, and YAGNI,
+        and experience with MVC, MVVM, and CQRS, Agile/Scrum/Kanban, and CI/CD (GitHub Actions and others).
+      </p>
+    </Section>
+
+    <Section title="Outside work" id="life">
+      <p>
+        I live as a digital nomad on Ko Pha-ngan, Thailand, with my family. When I'm not at a screen I'm usually on the
+        beach volleyball court, drinking too much tea, or in the greenhouse — I'm slowly building a small home farm and
+        greenhouse automation setup, and would love to hear from anyone doing similar tropical growing or
+        garden-automation projects.
+      </p>
+      <p>
+        I also build things for fun: a gamified, family-friendly task-management system (think GTD meets tabletop RPG),
+        and a Telegram bot that runs signups for my local beach volleyball group with Google Calendar integration and an
+        AI assistant. Both are early-stage and not public yet — if any of this overlaps with what you're building, or
+        you'd like to compare notes, reach out.
+      </p>
+      <ul class="grid gap-3 pt-2 sm:grid-cols-2">
+        {
+          areas.map((area) => (
+            <li>
+              <a
+                href={area.href}
+                class="group block h-full rounded border border-slate-200 p-4 hover:border-accent dark:border-slate-700"
+              >
+                <span class="font-semibold text-accent group-hover:underline">{area.title} →</span>
+                <span class="mt-1 block text-sm">{area.tagline}</span>
+                {areaStatus[area.id] && (
+                  <span class="mt-2 block text-xs text-slate-500 dark:text-slate-400">{areaStatus[area.id]}</span>
+                )}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </Section>
+
+    <Section title="Major tools" id="tools">
+      <dl class="grid gap-x-6 gap-y-3 sm:grid-cols-[auto_1fr]">
+        {
+          tools.map(({ group, items }) => (
+            <>
+              <dt class="font-mono text-sm leading-7 text-slate-500 dark:text-slate-400">{group}</dt>
+              <dd class="flex flex-wrap gap-1.5">
+                {items.map((item) => (
+                  <span class="rounded border border-slate-200 px-2 py-0.5 text-sm dark:border-slate-700">{item}</span>
+                ))}
+              </dd>
+            </>
+          ))
+        }
+      </dl>
+    </Section>
+
+    <Section title="Experiments" id="experiments">
+      <p>
+        Some recent things I've built. The list isn't always up to date, so check{' '}
+        <a class="text-accent underline-offset-2 hover:underline" href="https://github.com/osharper">GitHub</a> for the
+        latest.
+      </p>
+      <ul class="space-y-1">
+        {
+          experiments.map((e) => (
+            <li>
+              <a class="text-accent underline-offset-2 hover:underline" href={e.href}>
+                {e.title}
+              </a>
+              <span class="text-slate-600 dark:text-slate-400"> — {e.note}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </Section>
+
+    <Section title="Contact me" id="contact">
+      <p>
+        Email <a class="text-accent underline-offset-2 hover:underline" href="mailto:odolotov@gmail.com">odolotov@gmail.com</a>{' '}
+        or message me on <a class="text-accent underline-offset-2 hover:underline" href="https://t.me/osharper">Telegram</a>.
+        If you'd rather I reach out first, leave your details in the form below.
+      </p>
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLSc8Ebyw7xoitGWw0aOSGcp7qkUbKzwWut8b3R9YCKpXMwcjiQ/viewform?embedded=true"
+        title="Contact form"
+        loading="lazy"
+        class="h-[780px] w-full max-w-2xl rounded border border-slate-200 bg-white dark:border-slate-700"
+      >
+        Loading…
+      </iframe>
+    </Section>
+  </div>
+</Base>

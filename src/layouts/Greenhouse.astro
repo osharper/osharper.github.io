@@ -1,0 +1,67 @@
+---
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Small line above the title, e.g. the section name. */
+  kicker?: string;
+  lang?: string;
+}
+
+const { title, description, kicker, lang } = Astro.props;
+const path = Astro.url.pathname;
+
+const tabs = [
+  { href: '/greenhouse/', label: 'Overview' },
+  { href: '/greenhouse/log/', label: 'Log' },
+  { href: '/greenhouse/plantings/', label: 'Plantings' },
+  { href: '/greenhouse/seedbank/', label: 'Seed bank' },
+  { href: '/greenhouse/inventory/', label: 'Inventory' },
+  { href: '/greenhouse/notes/', label: 'Notes' },
+];
+const isCurrent = (href: string) => (href === '/greenhouse/' ? path === href : path.startsWith(href));
+---
+
+<Base title={`${title} · Greenhouse · Oleg Dolotov`} description={description} area="greenhouse" lang={lang}>
+  <nav class="mt-6 -mx-4 overflow-x-auto px-4" aria-label="Greenhouse">
+    <ul class="flex w-max gap-1 font-mono text-sm">
+      {
+        tabs.map((tab) => (
+          <li>
+            <a
+              href={tab.href}
+              class:list={[
+                'card block px-3 py-1.5 hover:text-accent',
+                isCurrent(tab.href) && '!border-accent text-accent-strong',
+              ]}
+              aria-current={isCurrent(tab.href) ? 'page' : undefined}
+            >
+              {tab.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <header class="card mt-4 px-5 py-5 sm:px-8">
+    {kicker && <p class="font-mono text-xs uppercase tracking-wider text-accent">{kicker}</p>}
+    <h1 class="mt-1 text-3xl font-semibold tracking-tight text-balance sm:text-4xl" lang={lang}>{title}</h1>
+    <slot name="header" />
+  </header>
+
+  <div class="mt-4 mb-8 flex flex-col gap-4">
+    <slot />
+  </div>
+</Base>
+
+<script>
+  // Day counts are baked in at build time; refresh them to today's date
+  // (Asia/Bangkok) so the page stays right between vault pushes.
+  const today = new Date(new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Bangkok' }).format(new Date()));
+  for (const el of document.querySelectorAll<HTMLElement>('[data-days-since]')) {
+    const days = Math.round((today.getTime() - new Date(el.dataset.daysSince!).getTime()) / 86_400_000);
+    if (days >= 0) el.textContent = `day ${days}`;
+  }
+</script>

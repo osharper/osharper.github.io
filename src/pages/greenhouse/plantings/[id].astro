@@ -1,0 +1,44 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import Greenhouse from '../../../layouts/Greenhouse.astro';
+import MetaList from '../../../components/greenhouse/MetaList.astro';
+import StatusPill from '../../../components/greenhouse/StatusPill.astro';
+import DaysSince from '../../../components/greenhouse/DaysSince.astro';
+import { excerpt, fmtDate, fmtRange, getPlantings, isActive, linkField, titleOf } from '../../../lib/greenhouse';
+
+export const getStaticPaths = (async () =>
+  (await getPlantings()).map((planting) => ({ params: { id: planting.id }, props: { planting } }))) satisfies GetStaticPaths;
+
+const { planting } = Astro.props;
+const d = planting.data;
+const { Content } = await render(planting);
+const variety = await linkField(planting, d.variety);
+
+const rows: [string, unknown, string?][] = [
+  ['variety', variety?.label, variety?.href],
+  ['quantity', d.qty],
+  ['where', d.system],
+  ['sown', d.sown && `${fmtDate(d.sown)}${d.sown_approx ? ' (approx.)' : ''}`],
+  ['germinated', d.germinated ? fmtDate(d.germinated) : fmtRange(d.germinate_from, d.germinate_to) && `expected ${fmtRange(d.germinate_from, d.germinate_to)}`],
+  ['transplanted', d.transplanted ? fmtDate(d.transplanted) : fmtRange(d.transplant_from, d.transplant_to) && `expected ${fmtRange(d.transplant_from, d.transplant_to)}`],
+  ['harvest', d.first_harvest ? `first ${fmtDate(d.first_harvest)}` : fmtRange(d.harvest_from, d.harvest_to) && `expected ${fmtRange(d.harvest_from, d.harvest_to)}`],
+  ['next sowing', fmtDate(d.next_succession)],
+  ['updated', fmtDate(d.updated)],
+];
+---
+
+<Greenhouse title={titleOf(planting)} kicker={`Planting · ${planting.id}`} description={excerpt(planting, 'Notes', 160)}>
+  <Fragment slot="header">
+    <p class="mt-2 flex items-center gap-2 font-mono text-sm text-slate-500 dark:text-slate-400">
+      <StatusPill status={d.status} />
+      {d.sown && isActive(planting) && <DaysSince since={d.sown} />}
+    </p>
+    <MetaList rows={rows} />
+    {d.timeline_basis && <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Timeline basis: {d.timeline_basis}</p>}
+  </Fragment>
+
+  <article class="card prose-site px-5 py-5 sm:px-8">
+    <Content />
+  </article>
+</Greenhouse>

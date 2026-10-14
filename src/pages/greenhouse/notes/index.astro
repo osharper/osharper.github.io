@@ -1,0 +1,37 @@
+---
+import Greenhouse from '../../../layouts/Greenhouse.astro';
+import { excerpt, fmtDate, getNotes, titleOf } from '../../../lib/greenhouse';
+import { noteLang } from '../../../lib/lang';
+
+const notes = await getNotes();
+---
+
+<Greenhouse
+  title="Notes"
+  kicker="Greenhouse"
+  description="Background notes on the greenhouse: site profile, growing practices, systems and the automation plan."
+>
+  <p slot="header" class="mt-3 max-w-3xl leading-relaxed text-slate-700 dark:text-slate-300">
+    The longer-lived notes behind the log: the site profile, lessons from tropical growing, and the automation and
+    computer-vision plans. Some of the older ones are written in Russian.
+  </p>
+
+  <ul class="grid gap-3 sm:grid-cols-2">
+    {
+      notes.map((note) => {
+        const lang = noteLang(note);
+        return (
+          <li>
+            <a href={`/greenhouse/notes/${note.id}/`} class="card group flex h-full flex-col gap-2 p-4 hover:border-accent" lang={lang}>
+              <h2 class="font-semibold group-hover:text-accent">{titleOf(note)}</h2>
+              <p class="line-clamp-3 text-sm text-slate-600 dark:text-slate-300">{excerpt(note, undefined, 200)}</p>
+              <p class="mt-auto font-mono text-xs text-slate-500 dark:text-slate-400" lang="en">
+                {lang === 'ru' && 'in Russian · '}updated {fmtDate(note.data.updated)}
+              </p>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</Greenhouse>

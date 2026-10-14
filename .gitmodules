@@ -1,0 +1,4 @@
+[submodule "vaults/greenhouse"]
+	path = vaults/greenhouse
+	url = https://github.com/osharper/greenhouse-vault.git
+	branch = master

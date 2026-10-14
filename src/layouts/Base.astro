@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+import Particles from '../components/Particles.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Area id; switches accent and particle colours. */
+  area?: string;
+  /** Page language, for notes written in another language. */
+  lang?: string;
+}
+
+const { title, description, area = 'home', lang = 'en' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang={lang} data-area={area}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+  </head>
+  <body class="min-h-screen font-sans">
+    <Particles />
+    <div class="relative z-10 flex min-h-screen flex-col">
+      <SiteHeader />
+      <main class="mx-auto w-full max-w-5xl flex-1 px-4">
+        <slot />
+      </main>
+      <SiteFooter />
+    </div>
+  </body>
+</html>

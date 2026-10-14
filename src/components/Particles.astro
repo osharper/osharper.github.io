@@ -1,0 +1,67 @@
+---
+// Full-screen particle field behind the page. Colour comes from the
+// --particles CSS variable, so each area and colour scheme tints it.
+---
+
+<div id="tsparticles" aria-hidden="true"></div>
+
+<script>
+  import { tsParticles, type ISourceOptions } from '@tsparticles/engine';
+  import { loadBasic } from '@tsparticles/basic';
+  import { loadInteractivityPlugin } from '@tsparticles/plugin-interactivity';
+  import { loadExternalGrabInteraction } from '@tsparticles/interaction-external-grab';
+  import { loadExternalPushInteraction } from '@tsparticles/interaction-external-push';
+  import { loadExternalParallaxInteraction } from '@tsparticles/interaction-external-parallax';
+  import { loadParticlesLinksInteraction } from '@tsparticles/interaction-particles-links';
+
+  const particleColor = () =>
+    getComputedStyle(document.documentElement).getPropertyValue('--particles').trim() || '#bbbbbb';
+
+  const options = (color: string): ISourceOptions => ({
+    fullScreen: { enable: true, zIndex: 0 },
+    background: { color: 'transparent' },
+    fpsLimit: 60,
+    detectRetina: true,
+    pauseOnBlur: true,
+    pauseOnOutsideViewport: true,
+    interactivity: {
+      detectsOn: 'window',
+      events: {
+        onClick: { enable: true, mode: 'push' },
+        onHover: { enable: true, mode: ['grab', 'parallax'] },
+        resize: { enable: true, delay: 0.5 },
+      },
+      modes: {
+        grab: { distance: 400, links: { opacity: 1 } },
+        push: { quantity: 4 },
+        parallax: { force: 60, smooth: 10 },
+      },
+    },
+    particles: {
+      number: { value: 100, density: { enable: true, width: 1920, height: 1080 }, limit: { mode: 'delete', value: 200 } },
+      color: { value: color },
+      links: { enable: true, color, distance: 150, opacity: 0.4, width: 1 },
+      move: { enable: true, speed: 2, outModes: { default: 'out' } },
+      opacity: { value: { min: 0.1, max: 0.5 } },
+      size: { value: { min: 1, max: 10 }, animation: { enable: true, speed: 10, sync: false, startValue: 'random' } },
+      shape: { type: 'circle' },
+    },
+    motion: { reduce: { value: true, factor: 4 } },
+  });
+
+  async function start() {
+    await loadBasic(tsParticles);
+    await loadInteractivityPlugin(tsParticles);
+    await Promise.all([
+      loadExternalGrabInteraction(tsParticles),
+      loadExternalPushInteraction(tsParticles),
+      loadExternalParallaxInteraction(tsParticles),
+      loadParticlesLinksInteraction(tsParticles),
+    ]);
+    const load = () => tsParticles.load({ id: 'tsparticles', options: options(particleColor()) });
+    await load();
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', load);
+  }
+
+  start();
+</script>

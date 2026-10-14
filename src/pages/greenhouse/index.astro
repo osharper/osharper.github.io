@@ -1,0 +1,134 @@
+---
+import Greenhouse from '../../layouts/Greenhouse.astro';
+import LogCard from '../../components/greenhouse/LogCard.astro';
+import PlantingCard from '../../components/greenhouse/PlantingCard.astro';
+import { getInventory, getLog, getNotes, getPlantings, getSeeds, isActive, titleOf, fmtDate } from '../../lib/greenhouse';
+import { noteLang } from '../../lib/lang';
+
+const [log, plantings, seeds, inventory, notes] = await Promise.all([
+  getLog(),
+  getPlantings(),
+  getSeeds(),
+  getInventory(),
+  getNotes(),
+]);
+
+const active = plantings.filter(isActive);
+const planned = plantings.filter((p) => p.data.status === 'planned');
+const ended = plantings.filter((p) => ['done', 'failed'].includes(p.data.status));
+const profile = notes.find((n) => n.id === 'profile');
+const latest = log[0];
+
+const stats = [
+  { value: log.length, label: 'days logged', href: '/greenhouse/log/' },
+  { value: active.length, label: 'batches growing', href: '/greenhouse/plantings/' },
+  { value: ended.length, label: 'batches finished', href: '/greenhouse/plantings/#ended' },
+  { value: seeds.length, label: 'seed varieties', href: '/greenhouse/seedbank/' },
+  { value: inventory.length, label: 'pieces of kit', href: '/greenhouse/inventory/' },
+];
+---
+
+<Greenhouse
+  title="A tropical home greenhouse"
+  kicker="Koh Phangan, Thailand"
+  description="A home greenhouse on Koh Phangan, logged day by day: plantings, seeds, gear and what went wrong."
+>
+  <Fragment slot="header">
+    <div class="mt-3 max-w-3xl space-y-3 leading-relaxed text-slate-700 dark:text-slate-300">
+      <p>
+        Bamboo frame, shade netting, fabric grow bags, a vertical hydroponic tower and a compost tumbler. Heat,
+        humidity and intense sun decide almost everything here, and varieties bred for cooler climates often don't
+        make it.
+      </p>
+      <p>
+        This section is generated from the Obsidian vault I keep the greenhouse in. Every push to the vault rebuilds
+        the site, so the log, plantings and seed bank stay in sync with what's actually growing.
+      </p>
+    </div>
+    <dl class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-5">
+      {
+        stats.map((s) => (
+          <a href={s.href} class="rounded border border-slate-200 px-3 py-2 hover:border-accent dark:border-slate-700">
+            <dd class="text-2xl font-semibold text-accent">{s.value}</dd>
+            <dt class="font-mono text-xs text-slate-500 dark:text-slate-400">{s.label}</dt>
+          </a>
+        ))
+      }
+    </dl>
+  </Fragment>
+
+  {
+    latest && (
+      <section aria-labelledby="latest">
+        <h2 id="latest" class="mb-2 font-mono text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+          Latest from the log
+        </h2>
+        <LogCard entry={latest} photos={6} />
+      </section>
+    )
+  }
+
+  <section aria-labelledby="growing">
+    <h2 id="growing" class="mb-2 font-mono text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+      Growing now
+    </h2>
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {active.map((planting) => <PlantingCard planting={planting} />)}
+    </div>
+    {
+      planned.length > 0 && (
+        <p class="card mt-3 px-4 py-2 text-sm">
+          <span class="font-mono text-xs text-slate-500 dark:text-slate-400">Planned:</span>{' '}
+          {planned.map((p, i) => (
+            <>
+              {i > 0 && ', '}
+              <a class="text-accent hover:underline" href={`/greenhouse/plantings/${p.id}/`}>
+                {titleOf(p)}
+              </a>
+              {p.data.sown && ` (${fmtDate(p.data.sown)})`}
+            </>
+          ))}
+        </p>
+      )
+    }
+  </section>
+
+  {
+    log.length > 1 && (
+      <section aria-labelledby="recent">
+        <h2 id="recent" class="mb-2 font-mono text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+          Earlier
+        </h2>
+        <div class="flex flex-col gap-3">
+          {log.slice(1, 4).map((entry) => (
+            <LogCard entry={entry} />
+          ))}
+        </div>
+        <a href="/greenhouse/log/" class="mt-3 inline-block font-mono text-sm text-accent hover:underline">
+          Full log →
+        </a>
+      </section>
+    )
+  }
+
+  {
+    notes.length > 0 && (
+      <section aria-labelledby="background" class="card p-4 sm:p-5">
+        <h2 id="background" class="font-mono text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+          Background
+        </h2>
+        <ul class="mt-2 space-y-1">
+          {notes.map((note) => (
+            <li>
+              <a class="text-accent hover:underline" href={`/greenhouse/notes/${note.id}/`}>
+                {titleOf(note)}
+              </a>
+              {noteLang(note) === 'ru' && <span class="ml-1 font-mono text-xs text-slate-500">(in Russian)</span>}
+            </li>
+          ))}
+        </ul>
+        {profile && <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Site profile updated {fmtDate(profile.data.updated)}.</p>}
+      </section>
+    )
+  }
+</Greenhouse>

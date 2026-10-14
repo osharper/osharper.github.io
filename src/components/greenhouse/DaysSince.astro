@@ -1,0 +1,15 @@
+---
+// "day N" since a date. Rendered at build time, refreshed client-side by the
+// Greenhouse layout.
+import { isoDate } from '../../lib/greenhouse';
+
+interface Props {
+  since?: Date;
+}
+
+const { since } = Astro.props;
+const now = new Date(new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Bangkok' }).format(new Date()));
+const days = since ? Math.round((now.getTime() - since.getTime()) / 86_400_000) : -1;
+---
+
+{days >= 0 && <span data-days-since={isoDate(since)}>day {days}</span>}

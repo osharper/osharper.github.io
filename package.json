@@ -1,28 +1,39 @@
 {
-  "name": "vite-template-solid",
-  "version": "0.0.0",
-  "description": "",
-  "scripts": {
-    "start": "vite",
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
-  },
+  "name": "osharper-site",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
   "license": "MIT",
-  "devDependencies": {
-    "autoprefixer": "^10.4.17",
-    "postcss": "^8.4.33",
-    "solid-devtools": "^0.27.3",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5.1.3",
-    "vite": "^4.3.9",
-    "vite-plugin-solid": "^2.7.0"
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "media": "node scripts/sync-vault-media.mjs",
+    "predev": "npm run media",
+    "dev": "astro dev",
+    "prebuild": "npm run media",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
-    "@tsparticles/configs": "^3.0.3",
-    "@tsparticles/engine": "^3.0.3",
-    "@tsparticles/solid": "^3.0.0",
-    "solid-js": "^1.7.6",
-    "tsparticles": "^3.0.3"
+    "@astrojs/markdown-remark": "^7.3.2",
+    "@astrojs/sitemap": "^3.7.4",
+    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/vite": "^4.3.3",
+    "@tsparticles/basic": "^4.4.0",
+    "@tsparticles/engine": "^4.4.0",
+    "@tsparticles/interaction-external-grab": "^4.4.0",
+    "@tsparticles/interaction-external-parallax": "^4.4.0",
+    "@tsparticles/interaction-external-push": "^4.4.0",
+    "@tsparticles/interaction-particles-links": "^4.4.0",
+    "@tsparticles/plugin-interactivity": "^4.4.0",
+    "astro": "^7.3.8",
+    "tailwindcss": "^4.3.3",
+    "unist-util-visit": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/mdast": "^4.0.4",
+    "@types/node": "^24.19.2"
   }
 }

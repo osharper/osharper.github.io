@@ -1,0 +1,50 @@
+---
+import Greenhouse from '../../../layouts/Greenhouse.astro';
+import StatusPill from '../../../components/greenhouse/StatusPill.astro';
+import { getInventory, imageUrl, titleOf } from '../../../lib/greenhouse';
+
+const items = await getInventory();
+const categories = [...Map.groupBy(items, (item) => item.data.category)].sort(([a], [b]) => a.localeCompare(b));
+---
+
+<Greenhouse
+  title="Inventory"
+  kicker="Greenhouse"
+  description="Greenhouse kit: containers, equipment, electronics and consumables, with what's in use and what's spare."
+>
+  <p slot="header" class="mt-3 max-w-3xl leading-relaxed text-slate-700 dark:text-slate-300">
+    What's on hand, how big it is and whether it's in use. Containers and growing kit, plus the electronics waiting for
+    the automation and camera projects.
+  </p>
+
+  {
+    categories.map(([category, list]) => (
+      <section aria-label={category} class="card p-4 sm:p-5">
+        <h2 class="mb-3 font-mono text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+          {category} <span class="font-normal">({list.length})</span>
+        </h2>
+        <ul class="divide-y divide-slate-200 dark:divide-slate-700">
+          {list.map((item) => {
+            const photo = imageUrl(item, item.data.photo);
+            return (
+              <li>
+                <a href={`/greenhouse/inventory/${item.id}/`} class="group flex items-center gap-3 py-2">
+                  {photo ? (
+                    <img src={photo} alt="" loading="lazy" class="size-12 shrink-0 rounded border border-slate-200 object-cover dark:border-slate-700" />
+                  ) : (
+                    <span class="size-12 shrink-0 rounded border border-dashed border-slate-300 dark:border-slate-600" />
+                  )}
+                  <span class="min-w-0 flex-1 group-hover:text-accent">{titleOf(item)}</span>
+                  {item.data.qty_total !== undefined && (
+                    <span class="font-mono text-sm text-slate-500 dark:text-slate-400">×{item.data.qty_total}</span>
+                  )}
+                  <StatusPill status={item.data.status} />
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))
+  }
+</Greenhouse>

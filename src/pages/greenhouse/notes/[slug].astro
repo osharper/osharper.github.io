@@ -1,0 +1,24 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import Greenhouse from '../../../layouts/Greenhouse.astro';
+import { excerpt, fmtDate, getNotes, titleOf } from '../../../lib/greenhouse';
+import { noteLang } from '../../../lib/lang';
+
+export const getStaticPaths = (async () =>
+  (await getNotes()).map((note) => ({ params: { slug: note.id }, props: { note } }))) satisfies GetStaticPaths;
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+const lang = noteLang(note);
+---
+
+<Greenhouse title={titleOf(note)} kicker="Greenhouse notes" description={excerpt(note, undefined, 160)} lang={lang}>
+  <p slot="header" class="mt-2 font-mono text-xs text-slate-500 dark:text-slate-400" lang="en">
+    {lang === 'ru' && 'Written in Russian · '}updated {fmtDate(note.data.updated)}
+  </p>
+
+  <article class="card prose-site px-5 py-5 sm:px-8" lang={lang}>
+    <Content />
+  </article>
+</Greenhouse>

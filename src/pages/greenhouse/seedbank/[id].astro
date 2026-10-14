@@ -1,0 +1,47 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import Greenhouse from '../../../layouts/Greenhouse.astro';
+import MetaList from '../../../components/greenhouse/MetaList.astro';
+import StatusPill from '../../../components/greenhouse/StatusPill.astro';
+import PlantingCard from '../../../components/greenhouse/PlantingCard.astro';
+import { excerpt, fmtDate, getPlantings, getSeeds, titleOf } from '../../../lib/greenhouse';
+
+export const getStaticPaths = (async () => {
+  const plantings = await getPlantings();
+  return (await getSeeds()).map((seed) => ({
+    params: { id: seed.id },
+    props: {
+      seed,
+      plantings: plantings.filter((p) => p.data.variety?.includes(`Seedbank/${seed.id}`)),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { seed, plantings } = Astro.props;
+const { Content } = await render(seed);
+---
+
+<Greenhouse title={titleOf(seed)} kicker="Seed bank" description={excerpt(seed, 'Suitability', 160)}>
+  <Fragment slot="header">
+    <p class="mt-2"><StatusPill status={seed.data.status} /></p>
+    <MetaList rows={[['suitability', seed.data.rating], ['updated', fmtDate(seed.data.updated)]]} />
+  </Fragment>
+
+  {
+    plantings.length > 0 && (
+      <section aria-labelledby="batches">
+        <h2 id="batches" class="mb-2 font-mono text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+          Batches from this seed
+        </h2>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {plantings.map((planting) => <PlantingCard planting={planting} />)}
+        </div>
+      </section>
+    )
+  }
+
+  <article class="card prose-site px-5 py-5 sm:px-8">
+    <Content />
+  </article>
+</Greenhouse>

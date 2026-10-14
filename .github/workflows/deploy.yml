@@ -1,0 +1,62 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  # Sent by a vault repo (e.g. greenhouse-vault) on every push to its master.
+  repository_dispatch:
+    types: [vault-updated]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # greenhouse-vault is private, so the submodule checkout needs a PAT
+      # with read access to it (secret GH_PAT).
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_PAT || github.token }}
+
+      # Always build from the latest vault content, not the pinned submodule
+      # commit, so a code-only push never rolls the site's content back.
+      - name: Update vaults to latest
+        run: |
+          git submodule update --remote --recursive
+          git submodule foreach 'echo "$name @ $(git log -1 --format="%h %s")"'
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+      - name: Check for empty pages
+        run: |
+          empty=$(find dist -name '*.html' -size 0)
+          if [ -n "$empty" ]; then echo "Empty pages:"; echo "$empty"; exit 1; fi
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

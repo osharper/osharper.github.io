@@ -1,0 +1,36 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import Greenhouse from '../../../layouts/Greenhouse.astro';
+import { excerpt, fmtDate, getLog } from '../../../lib/greenhouse';
+
+export const getStaticPaths = (async () => {
+  const log = await getLog();
+  return log.map((entry, i) => ({
+    params: { date: entry.id },
+    props: { entry, newer: log[i - 1], older: log[i + 1] },
+  }));
+}) satisfies GetStaticPaths;
+
+const { entry, newer, older } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Greenhouse
+  title={fmtDate(entry.data.date, 'long')}
+  kicker="Greenhouse log"
+  description={excerpt(entry, 'Summary', 160) || `Greenhouse log for ${entry.id}`}
+>
+  <Fragment slot="header">
+    {entry.data.weather && <p class="mt-2 font-mono text-sm text-slate-500 dark:text-slate-400">{entry.data.weather}</p>}
+  </Fragment>
+
+  <article class="card prose-site px-5 py-5 sm:px-8">
+    <Content />
+  </article>
+
+  <nav class="flex justify-between gap-3 font-mono text-sm" aria-label="Log entries">
+    {older ? <a class="card px-3 py-2 hover:text-accent" href={`/greenhouse/log/${older.id}/`}>← {older.id}</a> : <span />}
+    {newer && <a class="card px-3 py-2 hover:text-accent" href={`/greenhouse/log/${newer.id}/`}>{newer.id} →</a>}
+  </nav>
+</Greenhouse>

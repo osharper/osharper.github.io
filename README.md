@@ -1,36 +1,55 @@
-# Personal website built with [Solid.js](https://www.solidjs.com/) and [Tailwind](https://tailwindcss.com/)
+# osharper.github.io
 
-## Usage
+Personal site of Oleg Dolotov: <https://osharper.github.io>
 
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
+- `/`: about me, experience and contacts (written in this repo)
+- `/greenhouse/`: the home greenhouse on Koh Phangan, generated from the
+  [greenhouse-vault](https://github.com/osharper/greenhouse-vault) Obsidian vault
 
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
+Built with [Astro](https://astro.build), Tailwind CSS and [tsParticles](https://particles.js.org), deployed to
+GitHub Pages by GitHub Actions.
+
+## Develop
 
 ```bash
-$ npm install # or pnpm install or yarn install
+git clone --recurse-submodules https://github.com/osharper/osharper.github.io.git
+npm install
+npm run dev          # http://localhost:4321
+npm run build        # static site in dist/
 ```
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+Already cloned without submodules? `git submodule update --init`.
 
-## Available Scripts
+To preview vault notes you haven't pushed yet, point the build at your working copy of the vault:
 
-In the project directory, you can run:
+```bash
+GREENHOUSE_VAULT=../greenhouse-vault npm run dev
+```
 
-### `npm run dev` or `npm start`
+## How content gets here
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+greenhouse-vault (Obsidian, markdown)          osharper.github.io
+  push to master                                 vaults/greenhouse  (git submodule)
+    └─ trigger-site-rebuild.yml ──repository_dispatch──▶ deploy.yml
+                                                   ├─ git submodule update --remote
+                                                   ├─ npm run build
+                                                   └─ deploy to GitHub Pages
+```
 
-The page will reload if you make edits.<br>
+Every build uses the latest vault content, whether it was triggered by a vault push or by a push here.
 
-### `npm run build`
+### Secrets
 
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
+| Repo | Secret | Token needs |
+|---|---|---|
+| osharper.github.io | `GH_PAT` | read access to `greenhouse-vault` (it's private) |
+| greenhouse-vault | `SITE_REBUILD_TOKEN` | Contents: read & write on `osharper.github.io` (to send `repository_dispatch`) |
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+One fine-grained PAT covering both repos works for both secrets.
 
-## Deployment
+## What gets published from a vault
 
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
+Only what `vaults.config.mjs` lists: the `sections` folders (every note in them gets a page) and the root `notes`.
+Everything else in the vault stays private, and any note can opt out with `publish: false` in its frontmatter.
+Images are copied only if a published note embeds them.

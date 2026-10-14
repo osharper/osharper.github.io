@@ -1,0 +1,28 @@
+---
+import { areas } from '../areas';
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="card sticky top-0 z-20 border-x-0 border-t-0">
+  <nav class="mx-auto flex max-w-5xl items-center gap-1 px-4 py-2 font-mono text-sm" aria-label="Site">
+    <a href="/" class="mr-auto py-1 font-bold hover:text-accent" aria-current={isCurrent('/') ? 'page' : undefined}>
+      &gt; osharper<span class="animate-pulse">_</span>
+    </a>
+    {
+      areas.map((area) => (
+        <a
+          href={area.href}
+          class:list={[
+            'rounded px-3 py-1 hover:bg-accent-soft hover:text-accent-strong',
+            isCurrent(area.href) && 'bg-accent-soft text-accent-strong',
+          ]}
+          aria-current={isCurrent(area.href) ? 'page' : undefined}
+        >
+          {area.title}
+        </a>
+      ))
+    }
+  </nav>
+</header>

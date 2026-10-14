@@ -1,0 +1,17 @@
+---
+import { statusTone } from '../../lib/greenhouse';
+
+interface Props {
+  status?: string;
+}
+
+const { status } = Astro.props;
+---
+
+{
+  status && (
+    <span class:list={['inline-block rounded-full px-2 py-0.5 font-mono text-xs whitespace-nowrap', statusTone(status)]}>
+      {status}
+    </span>
+  )
+}

@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { fmtDate, fmtRange, isActive, titleOf } from '../../lib/greenhouse';
+import StatusPill from './StatusPill.astro';
+import DaysSince from './DaysSince.astro';
+
+interface Props {
+  planting: CollectionEntry<'greenhousePlantings'>;
+}
+
+const { planting } = Astro.props;
+const { status, system, sown, sown_approx, harvest_from, harvest_to } = planting.data;
+---
+
+<a href={`/greenhouse/plantings/${planting.id}/`} class="card group flex flex-col gap-2 p-4 hover:border-accent">
+  <div class="flex items-start justify-between gap-2">
+    <h3 class="font-semibold leading-snug group-hover:text-accent">{titleOf(planting)}</h3>
+    <StatusPill status={status} />
+  </div>
+  <p class="font-mono text-xs text-slate-500 dark:text-slate-400">
+    {sown && <>sown {fmtDate(sown)}{sown_approx && ' (approx.)'}</>}
+    {sown && isActive(planting) && <> · <DaysSince since={sown} /></>}
+  </p>
+  {system && <p class="line-clamp-2 text-sm text-slate-600 dark:text-slate-300">{system}</p>}
+  {
+    harvest_from && isActive(planting) && (
+      <p class="mt-auto text-sm">
+        <span class="text-slate-500 dark:text-slate-400">Harvest window:</span> {fmtRange(harvest_from, harvest_to)}
+      </p>
+    )
+  }
+</a>

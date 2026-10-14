@@ -1,0 +1,34 @@
+---
+import github from '../../assets/icons/github-mark.svg?raw';
+import linkedin from '../../assets/icons/linkedin-svgrepo-com.svg?raw';
+import stackoverflow from '../../assets/icons/logo-stackoverflow.svg?raw';
+import telegram from '../../assets/icons/telegram-svgrepo-com.svg?raw';
+import soundcloud from '../../assets/icons/soundcloud-svgrepo-com.svg?raw';
+import email from '../../assets/icons/gmail-envelope-svgrepo-com.svg?raw';
+
+const links = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/oleg-dolotov-96a053aa', icon: linkedin },
+  { label: 'GitHub', href: 'https://github.com/osharper', icon: github },
+  { label: 'Stack Overflow', href: 'https://stackoverflow.com/users/1048482/osharper', icon: stackoverflow },
+  { label: 'Telegram', href: 'https://t.me/osharper', icon: telegram },
+  { label: 'SoundCloud', href: 'https://soundcloud.com/osharper', icon: soundcloud },
+  { label: 'Email', href: 'mailto:odolotov@gmail.com', icon: email },
+];
+---
+
+<ul class="flex flex-wrap justify-center gap-2" aria-label="Elsewhere">
+  {
+    links.map((link) => (
+      <li>
+        <a
+          href={link.href}
+          class="flex items-center gap-2 rounded border border-slate-200 px-3 py-1.5 text-sm hover:border-accent hover:text-accent dark:border-slate-700"
+          rel="me"
+        >
+          <span class="icon size-4" aria-hidden="true" set:html={link.icon} />
+          {link.label}
+        </a>
+      </li>
+    ))
+  }
+</ul>

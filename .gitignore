@@ -1,3 +1,6 @@
-node_modules
-dist
-.DS_store
+node_modules/
+dist/
+.astro/
+.DS_Store
+# copied from vaults at build time by scripts/sync-vault-media.mjs
+public/*/media/
