@@ -9,8 +9,6 @@ import photo from '../assets/me.jpg';
 
 // Rebuilt on every push here or to a vault, so build-time values stay fresh.
 const now = new Date();
-const birthdayPassed = now.getMonth() >= 8; // September
-const age = now.getFullYear() - 1986 - (birthdayPassed ? 0 : 1);
 const yearsOfExperience = now.getFullYear() - 2009;
 
 const [log, plantings] = await Promise.all([getLog(), getPlantings()]);
@@ -20,35 +18,42 @@ const areaStatus: Record<string, string> = {
     : '',
 };
 
-const tools = [
-  { group: 'Server side', items: ['Node.js / Express', 'ASP.NET Core', 'Python', 'Go', 'Rust'] },
-  { group: 'Client side', items: ['React', 'Angular', 'Solid.js', 'Vue', 'Unity3D'] },
-  { group: 'Databases', items: ['MongoDB', 'PostgreSQL', 'MySQL', 'SQLite', 'Redis'] },
-  { group: 'Infrastructure', items: ['CI/CD', 'AWS', 'GCP', 'Docker', 'Kubernetes', 'Serverless'] },
+const focus = [
+  {
+    title: 'Delivery pipelines',
+    text:
+      'CI/CD, release trains and infrastructure as code on AWS (EKS, Lambda, Terraform). I automate the boring, risky parts of a release — schema and index checks, migrations, worker rollouts — so releases stop depending on someone remembering a checklist.',
+  },
+  {
+    title: 'Agent orchestration',
+    text:
+      'I built and run an internal Claude Code plugin marketplace: shared skills, agents, hooks and MCP access to observability and data. It is used by the whole product team, not just developers: QA engineers and product managers open their own pull requests and run the QA and release agents themselves.',
+  },
+  {
+    title: 'Quality control',
+    text:
+      'Quality gates that run before code reaches production: automated regression suites mapped to the test plan, review agents for database and performance issues, upfront checks on index definitions and migrations. And the judgement to switch off automation that creates more noise than signal.',
+  },
+  {
+    title: 'Team direction',
+    text:
+      'Setting goals for a small cross-functional team, mentoring, leading production incidents and post-mortems, and running a legacy-to-new-platform migration in stages behind kill switches, without stopping the product.',
+  },
 ];
 
-const experiments = [
-  {
-    href: 'https://osharper.github.io/solid-tsparticles/',
-    title: 'Solid.js + tsParticles',
-    note: 'where the particle background started',
-  },
-  {
-    href: 'https://t.me/addstickers/magicreatures',
-    title: 'Magic creatures',
-    note: 'a Telegram sticker set my son drew',
-  },
-  {
-    href: 'https://github.com/osharper/osharper.github.io',
-    title: 'This website',
-    note: 'Astro, tsParticles, and an Obsidian vault rendered into a site section on every push',
-  },
+const tools = [
+  { group: 'Platform & delivery', items: ['AWS (EKS, Lambda, S3)', 'Terraform', 'Kubernetes', 'Docker', 'Jenkins', 'GitHub Actions'] },
+  { group: 'AI engineering', items: ['Claude Code', 'MCP servers', 'Agentic workflows', 'Review & release agents'] },
+  { group: 'Quality & observability', items: ['Playwright', 'Jest', 'Zephyr', 'Grafana', 'Prometheus / Loki', 'PostHog'] },
+  { group: 'Backend & data', items: ['TypeScript / Node.js (NestJS)', 'C# / .NET', 'Python', 'MongoDB', 'Elasticsearch', 'RabbitMQ', 'Redis'] },
+  { group: 'Frontend', items: ['React', 'Next.js', 'Angular', 'Astro'] },
+  { group: 'Exploring', items: ['Go', 'Rust'] },
 ];
 ---
 
 <Base
-  title="Oleg Dolotov — Cloud/DevOps engineer & AI adoption lead"
-  description="Oleg Dolotov: cloud/DevOps engineer and AI adoption lead, digital nomad on Koh Phangan, beach volleyball player and greenhouse tinkerer."
+  title="Oleg Dolotov — Tech Lead: delivery pipelines, AI agents, quality"
+  description="Oleg Dolotov, tech lead for healthcare SaaS: delivery pipelines, agent orchestration and quality control that let a small team ship like a big one."
 >
   <div class="flex flex-col gap-4 py-6">
     <figure class="card flex flex-col items-center gap-5 px-5 py-6 text-center sm:flex-row sm:gap-8 sm:px-8 sm:text-left">
@@ -64,10 +69,15 @@ const experiments = [
         <p class="font-mono text-xs text-slate-500 dark:text-slate-400">&gt; Hello world!</p>
         <h1 class="mt-1 text-3xl font-semibold tracking-tight sm:text-4xl">Oleg Dolotov</h1>
         <p class="mt-2 text-lg text-slate-700 sm:text-xl dark:text-slate-300">
-          Cloud/DevOps engineer & AI adoption lead, {yearsOfExperience} years of experience
+          Tech lead for healthcare SaaS. I build the pipelines, agents and quality gates that let a small team ship like
+          a big one.
         </p>
         <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
-          {age} years old, digital nomad based in Thailand, father, beach volleyball player
+          {yearsOfExperience} years in software · digital nomad on Ko Pha-ngan, Thailand, working with US teams
+        </p>
+        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+          Father, beach volleyball player, tea drinker. Also: a tropical greenhouse, folk music, and a camera pointed
+          at birds and lizards.
         </p>
       </figcaption>
     </figure>
@@ -82,62 +92,77 @@ const experiments = [
       </a>
     </div>
 
-    <Section title="About me" id="about">
+    <Section title="What I do" id="about">
       <p>
-        I have more than a decade of experience building web applications and cloud infrastructure — Node.js, React,
-        .NET, MongoDB, and AWS/GCP/Azure. My current focus is cloud infrastructure and DevOps (AWS EKS,
-        Docker/Kubernetes) and, most recently, leading AI adoption across engineering teams — bringing LLM-assisted and
-        agentic coding workflows into day-to-day development. I'm not limited to one stack (my main languages nowadays
-        are C#, JS/TS and Python) and I'm always exploring something new — currently Unity3D, Go, Rust, and self-hosted
-        AI tooling.
+        These days I write less code and spend more time on the system around it: how work gets from a ticket to
+        production, who checks what, and which parts a machine should do. I lead a small team at
+        <a class="text-accent underline-offset-2 hover:underline" href="https://showd.me/">Showd.me</a>, a training and
+        compliance platform for US healthcare organisations, where I started as a full-stack engineer in 2017.
       </p>
-      <p>
-        For eight years I've worked at Showd.me, a fast-growing employee training and certification platform —
-        starting as a full-stack developer and growing into leading its AI adoption initiative. Along the way I've built
-        data-driven reporting on raw ElasticSearch event data, PDF generation and bundling in AWS Lambda, and
-        integrations with EMS systems with complex APIs, while coordinating server-side, client-side, and storage work
-        across a dedicated team.
-      </p>
-      <p>
-        I have a strong understanding of the principles of software development, including SOLID, DRY, KISS, and YAGNI,
-        and experience with MVC, MVVM, and CQRS, Agile/Scrum/Kanban, and CI/CD (GitHub Actions and others).
-      </p>
-    </Section>
-
-    <Section title="Outside work" id="life">
-      <p>
-        I live as a digital nomad on Ko Pha-ngan, Thailand, with my family. When I'm not at a screen I'm usually on the
-        beach volleyball court, drinking too much tea, or in the greenhouse — I'm slowly building a small home farm and
-        greenhouse automation setup, and would love to hear from anyone doing similar tropical growing or
-        garden-automation projects.
-      </p>
-      <p>
-        I also build things for fun: a gamified, family-friendly task-management system (think GTD meets tabletop RPG),
-        and a Telegram bot that runs signups for my local beach volleyball group with Google Calendar integration and an
-        AI assistant. Both are early-stage and not public yet — if any of this overlaps with what you're building, or
-        you'd like to compare notes, reach out.
-      </p>
-      <ul class="grid gap-3 pt-2 sm:grid-cols-2">
+      <ul class="grid gap-3 pt-1 sm:grid-cols-2">
         {
-          areas.map((area) => (
-            <li>
-              <a
-                href={area.href}
-                class="group block h-full rounded border border-slate-200 p-4 hover:border-accent dark:border-slate-700"
-              >
-                <span class="font-semibold text-accent group-hover:underline">{area.title} →</span>
-                <span class="mt-1 block text-sm">{area.tagline}</span>
-                {areaStatus[area.id] && (
-                  <span class="mt-2 block text-xs text-slate-500 dark:text-slate-400">{areaStatus[area.id]}</span>
-                )}
-              </a>
+          focus.map((f) => (
+            <li class="rounded border border-slate-200 p-4 dark:border-slate-700">
+              <span class="font-semibold">{f.title}</span>
+              <span class="mt-1 block text-sm">{f.text}</span>
             </li>
           ))
         }
       </ul>
     </Section>
 
-    <Section title="Major tools" id="tools">
+    <Section title="Healthcare" id="healthcare">
+      <p>
+        Most of my last nine years has been in US healthcare: workforce training and certification for home-care and
+        clinical organisations, where every completion has to end up in the right compliance record. That means
+        integrating with the HR, payroll and EVV systems agencies already run, syncing staff records every day, and
+        sending completions back — reliably, because a missed sync means a caregiver who can't work. Before that I led
+        development of a platform that matched patients with clinical trials.
+      </p>
+    </Section>
+
+    <Section title="How I work" id="principles">
+      <ul class="list-disc space-y-2 pl-5">
+        <li>
+          <span class="font-semibold">Automate the checklist, not the judgement.</span> Agents should catch the missing
+          index or migration before a release; people should decide what ships.
+        </li>
+        <li>
+          <span class="font-semibold">AI adoption is a team habit, not a tool rollout.</span> The goal is fewer
+          hand-offs and a lower cognitive load. If agents start generating tickets nobody reads, the setup is wrong.
+        </li>
+        <li>
+          <span class="font-semibold">Small teams, wide ownership.</span> When QA and product can safely change code
+          and run releases themselves, a small team stops waiting on its developers.
+        </li>
+        <li>
+          <span class="font-semibold">Migrate in slices.</span> New platforms go live piece by piece, behind kill
+          switches and parity checks, never as a big-bang rewrite.
+        </li>
+      </ul>
+    </Section>
+
+    <Section title="How I think" id="thinking">
+      <p>
+        I'm most interested in the places where a technical problem turns out to be a behaviour problem. A release
+        process, an AI rollout and a task app fail in the same way: people, and increasingly agents, respond to
+        incentives, habits and friction, whatever the design document says. So I like to look at a system through more
+        than one lens: biology and behaviour, sociology, computation.
+      </p>
+      <p>
+        People whose way of thinking I keep coming back to: Robert Sapolsky on behaviour as biology and context, Michael
+        Levin on cognition at every scale, Stephen Wolfram on complexity from simple rules.
+      </p>
+      <p>
+        GTD RPG, my side project, is a small experiment in this. Modern entertainment is tuned to hook our dopamine
+        circuitry, and willpower rarely wins that fight, in kids or in adults. So instead of resisting it, the system
+        uses the same wiring: you earn what you already want, like an hour of YouTube, by doing things that matter.
+        It's classical conditioning in the spirit of Karen Pryor's <em>Don't Shoot the Dog</em>. A bit Pavlovian, and
+        honest about it.
+      </p>
+    </Section>
+
+    <Section title="Tools" id="tools">
       <dl class="grid gap-x-6 gap-y-3 sm:grid-cols-[auto_1fr]">
         {
           tools.map(({ group, items }) => (
@@ -154,20 +179,36 @@ const experiments = [
       </dl>
     </Section>
 
-    <Section title="Experiments" id="experiments">
+    <Section title="Outside work" id="life">
       <p>
-        Some recent things I've built. The list isn't always up to date, so check{' '}
-        <a class="text-accent underline-offset-2 hover:underline" href="https://github.com/osharper">GitHub</a> for the
-        latest.
+        I live on Ko Pha-ngan, Thailand, with my family. When I'm not at a screen I'm usually on the beach volleyball
+        court, drinking too much tea, or in the greenhouse — I'm slowly building a small home farm and greenhouse
+        automation setup, and would love to hear from anyone doing tropical growing or garden automation.
       </p>
-      <ul class="space-y-1">
+      <p>
+        I'm building GTD RPG, a gamified task system for kids, adults, teams and maybe even AI agents. The idea: an AI
+        checks that a task was really done, and the rewards are real too, coins that unlock things like extra screen
+        time or a snack cabinet. It's still early and not public. If you're into gamification, behaviour change or
+        agent incentives, I'd love to compare notes.
+      </p>
+      <p>
+        There's also a Telegram bot that runs signups for my local beach volleyball group, with Google Calendar and an
+        AI assistant. Same story: early, and not public yet.
+      </p>
+      <ul class="grid gap-3 pt-2 sm:grid-cols-2">
         {
-          experiments.map((e) => (
+          areas.map((area) => (
             <li>
-              <a class="text-accent underline-offset-2 hover:underline" href={e.href}>
-                {e.title}
+              <a
+                href={area.href}
+                class="group block h-full rounded border border-slate-200 p-4 hover:border-accent dark:border-slate-700"
+              >
+                <span class="font-semibold text-accent group-hover:underline">{area.title} →</span>
+                <span class="mt-1 block text-sm">{area.tagline}</span>
+                {areaStatus[area.id] && (
+                  <span class="mt-2 block text-xs text-slate-500 dark:text-slate-400">{areaStatus[area.id]}</span>
+                )}
               </a>
-              <span class="text-slate-600 dark:text-slate-400"> — {e.note}</span>
             </li>
           ))
         }
