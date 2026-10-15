@@ -3,6 +3,7 @@
 Personal site of Oleg Dolotov: <https://osharper.github.io>
 
 - `/`: about me, experience and contacts (written in this repo)
+- `/blog/`: posts written in this repo (`src/content/blog`), RSS at `/rss.xml`
 - `/greenhouse/`: the home greenhouse on Koh Phangan, generated from the
   [greenhouse-vault](https://github.com/osharper/greenhouse-vault) Obsidian vault
 

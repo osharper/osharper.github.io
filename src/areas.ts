@@ -10,9 +10,18 @@ export interface Area {
   title: string;
   href: string;
   tagline: string;
+  /** Show as a card in the home page "Outside work" block. Default true. */
+  card?: boolean;
 }
 
 export const areas: Area[] = [
+  {
+    id: 'blog',
+    title: 'Blog',
+    href: '/blog/',
+    tagline: 'Engineering, AI agents, human behaviour, and what I am building.',
+    card: false,
+  },
   {
     id: 'greenhouse',
     title: 'Greenhouse',

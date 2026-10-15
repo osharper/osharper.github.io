@@ -6,12 +6,14 @@ import Social from '../components/home/Social.astro';
 import { areas } from '../areas';
 import { excerpt, fmtDate, getLog, getPlantings, isActive } from '../lib/greenhouse';
 import photo from '../assets/me.jpg';
+import { fmtPostDate, getPosts } from '../lib/blog';
 
 // Rebuilt on every push here or to a vault, so build-time values stay fresh.
 const now = new Date();
 const yearsOfExperience = now.getFullYear() - 2009;
 
 const [log, plantings] = await Promise.all([getLog(), getPlantings()]);
+const posts = (await getPosts()).slice(0, 3);
 const areaStatus: Record<string, string> = {
   greenhouse: log[0]
     ? `Last logged ${fmtDate(log[0].data.date)} · ${plantings.filter(isActive).length} batches growing. ${excerpt(log[0], 'Summary', 200)}`
@@ -162,6 +164,29 @@ const tools = [
       </p>
     </Section>
 
+    {
+      posts.length > 0 && (
+        <Section title="From the blog" id="blog">
+          <ul class="space-y-3">
+            {posts.map((post) => (
+              <li>
+                <a class="text-accent underline-offset-2 hover:underline" href={`/blog/${post.id}/`}>
+                  {post.data.title}
+                </a>
+                <span class="text-slate-600 dark:text-slate-400"> — {fmtPostDate(post.data.date)}</span>
+                <span class="block text-sm">{post.data.description}</span>
+              </li>
+            ))}
+          </ul>
+          <p>
+            <a class="text-accent underline-offset-2 hover:underline" href="/blog/">
+              All posts →
+            </a>
+          </p>
+        </Section>
+      )
+    }
+
     <Section title="Tools" id="tools">
       <dl class="grid gap-x-6 gap-y-3 sm:grid-cols-[auto_1fr]">
         {
@@ -197,7 +222,7 @@ const tools = [
       </p>
       <ul class="grid gap-3 pt-2 sm:grid-cols-2">
         {
-          areas.map((area) => (
+          areas.filter((area) => area.card !== false).map((area) => (
             <li>
               <a
                 href={area.href}

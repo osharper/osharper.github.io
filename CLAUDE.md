@@ -18,6 +18,9 @@ src/lib/greenhouse.ts        collection getters, titles, excerpts, status colour
 src/layouts/Base.astro       html shell, particles, header/footer; `area` prop sets accent + particle colour
 src/layouts/Greenhouse.astro area tabs + page header
 src/pages/index.astro        home page content (lives here, not in a vault)
+src/content/blog/            blog posts, markdown written in this repo (not from a vault)
+src/lib/blog.ts              getPosts() (hides `draft: true` in production), date formatting
+src/pages/blog/              post list + post page; src/pages/rss.xml.ts is the feed
 src/pages/greenhouse/        overview, log, plantings, seedbank, inventory, notes
 ```
 
@@ -30,6 +33,12 @@ src/pages/greenhouse/        overview, log, plantings, seedbank, inventory, note
 - Before anything new gets published from a vault, check it for secrets, IPs and personal data. Publishing is
   allowlist-only for that reason. Don't widen `sections`/`notes` without asking.
 - `npm run build` must pass before committing; it also validates the vault against the schemas.
+- Blog posts: frontmatter `title`, `description`, `date`, optional `updated`, `lang` (en/ru) and `draft`. No H1 in
+  the body, the layout renders the title. `draft: true` keeps a post off the site (list, page, RSS) in production;
+  `npm run dev` still shows it. Flip it to `false` (or delete the line) to publish.
+- The RSS feed is hand-written on purpose: CI runs `npm ci`, so a new dependency also needs an updated
+  package-lock.json.
+- Link previews use `public/og.jpg` (1200x630) unless a page passes `image` to Base.astro.
 
 ## Adding an area
 

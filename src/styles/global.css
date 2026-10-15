@@ -30,6 +30,14 @@
   --accent-soft: #dcfce7;
 }
 
+:root[data-area="blog"] {
+  --bg: #fcfbff;
+  --particles: #cfc6ee;
+  --accent: #7c3aed;
+  --accent-strong: #6d28d9;
+  --accent-soft: #ede9fe;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #0d1117;
@@ -45,6 +53,14 @@
     --accent: #4ade80;
     --accent-strong: #86efac;
     --accent-soft: #14321f;
+  }
+
+  :root[data-area="blog"] {
+    --bg: #110e1a;
+    --particles: #43386a;
+    --accent: #a78bfa;
+    --accent-strong: #c4b5fd;
+    --accent-soft: #2a1f4d;
   }
 }
 

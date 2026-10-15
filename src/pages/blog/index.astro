@@ -1,0 +1,45 @@
+---
+import Blog from '../../layouts/Blog.astro';
+import { fmtPostDate, getPosts } from '../../lib/blog';
+
+const posts = await getPosts();
+---
+
+<Blog
+  title="Blog"
+  documentTitle="Blog · Oleg Dolotov"
+  kicker="Oleg Dolotov"
+  description="Notes on engineering, AI agents and human behaviour, and the things I'm building."
+>
+  <Fragment slot="header">
+    <p class="mt-3 max-w-3xl leading-relaxed text-slate-700 dark:text-slate-300">
+      Engineering, AI agents, how people (and machines) respond to incentives, and what I'm building on the side. Also
+      available as <a class="text-accent underline-offset-2 hover:underline" href="/rss.xml">RSS</a>.
+    </p>
+  </Fragment>
+
+  {
+    posts.length === 0 ? (
+      <p class="card px-5 py-4 text-slate-700 dark:text-slate-300">First post coming soon.</p>
+    ) : (
+      <ul class="flex flex-col gap-3">
+        {posts.map((post) => (
+          <li>
+            <a
+              href={`/blog/${post.id}/`}
+              class="card group block px-5 py-4 hover:border-accent sm:px-8"
+              lang={post.data.lang}
+            >
+              <span class="font-mono text-xs text-slate-500 dark:text-slate-400" lang="en">
+                {fmtPostDate(post.data.date)}
+                {post.data.draft && ' · draft'}
+              </span>
+              <span class="mt-1 block text-xl font-semibold text-accent group-hover:underline">{post.data.title}</span>
+              <span class="mt-1 block text-sm text-slate-700 dark:text-slate-300">{post.data.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</Blog>

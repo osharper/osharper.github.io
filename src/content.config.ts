@@ -95,7 +95,21 @@ const greenhouseNotes = defineCollection({
   }),
 });
 
+// Blog posts live in this repo (not in a vault); see src/lib/blog.ts.
+const blog = defineCollection({
+  loader: glob({ base: './src/content/blog', pattern: '**/*.md' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.coerce.date(),
+    updated: z.coerce.date().optional(),
+    draft: z.boolean().default(false),
+    lang: z.enum(['en', 'ru']).default('en'),
+  }),
+});
+
 export const collections = {
+  blog,
   greenhouseLog,
   greenhousePlantings,
   greenhouseSeeds,

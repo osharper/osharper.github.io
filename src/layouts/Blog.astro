@@ -1,0 +1,36 @@
+---
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Small line above the title. */
+  kicker?: string;
+  lang?: string;
+  /** Set for a post: marks the page as an article. */
+  published?: Date;
+  /** Overrides the <title>; defaults to "<title> · Blog · Oleg Dolotov". */
+  documentTitle?: string;
+}
+
+const { title, description, kicker, lang, published, documentTitle } = Astro.props;
+---
+
+<Base
+  title={documentTitle ?? `${title} · Blog · Oleg Dolotov`}
+  description={description}
+  area="blog"
+  lang={lang}
+  type={published ? 'article' : 'website'}
+  published={published}
+>
+  <header class="card mt-6 px-5 py-5 sm:px-8">
+    {kicker && <p class="font-mono text-xs uppercase tracking-wider text-accent">{kicker}</p>}
+    <h1 class="mt-1 text-3xl font-semibold tracking-tight text-balance sm:text-4xl" lang={lang}>{title}</h1>
+    <slot name="header" />
+  </header>
+
+  <div class="mt-4 mb-8 flex flex-col gap-4">
+    <slot />
+  </div>
+</Base>

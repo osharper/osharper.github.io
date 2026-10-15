@@ -11,10 +11,17 @@ interface Props {
   area?: string;
   /** Page language, for notes written in another language. */
   lang?: string;
+  /** Open Graph type; blog posts use 'article'. */
+  type?: 'website' | 'article';
+  /** Publication date of an article. */
+  published?: Date;
+  /** Link-preview image (path or URL). Defaults to /og.jpg, a 1200x630 card. */
+  image?: string;
 }
 
-const { title, description, area = 'home', lang = 'en' } = Astro.props;
+const { title, description, area = 'home', lang = 'en', type = 'website', published, image } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const imageUrl = new URL(image ?? '/og.jpg', Astro.site);
 ---
 
 <!doctype html>
@@ -27,10 +34,17 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.ico" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <meta property="og:type" content="website" />
+    <link rel="alternate" type="application/rss+xml" title="Oleg Dolotov — Blog" href="/rss.xml" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="Oleg Dolotov" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    {!image && <meta property="og:image:width" content="1200" />}
+    {!image && <meta property="og:image:height" content="630" />}
+    {published && <meta property="article:published_time" content={published.toISOString()} />}
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
   </head>
